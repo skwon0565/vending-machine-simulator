@@ -32,8 +32,22 @@ public class VendingMachineCLI {
 			// A switch statement could also be used here.  Your choice.
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				// display vending machine items
+				displayItems();
+				break;
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 				// do purchase
+				purchaseItems();
+				break;
+			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
+				// exit
+				running = false;
+				break;
+			} else if (choice.equals(MAIN_MENU_SECRET_OPTION)) {
+				// sale report
+				generateSaleReport();
+			} else {
+				System.out.println("Not a Choice");
+				break;
 			}
 		}
 	}
