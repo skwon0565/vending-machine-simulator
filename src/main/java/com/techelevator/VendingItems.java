@@ -1,6 +1,6 @@
 package com.techelevator;
 
-public class VendingItems {
+public abstract class VendingItems {
 
     private String slotLocation;
     private String productName;
@@ -8,6 +8,8 @@ public class VendingItems {
     private String type;
     private static final int NEW_STOCK = 5;
     private int stockedAmount;
+
+    public VendingItems() {};
 
     public int getStockedAmount() {
         return stockedAmount;
@@ -57,5 +59,5 @@ public class VendingItems {
         this.stockedAmount = NEW_STOCK;
     }
 
-    public abstract int updateStock();
+    public abstract String getMessage();
 }

@@ -2,6 +2,9 @@ package com.techelevator;
 
 import com.techelevator.view.VendingMenu;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 
 public class VendingMachineCLI {
@@ -28,15 +31,15 @@ public class VendingMachineCLI {
 		boolean running = true;
 		while (running) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
-
+			VendingMachine myVendingMachine = new VendingMachine();
+			myVendingMachine.getInventory();
 			// A switch statement could also be used here.  Your choice.
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				// display vending machine items
-				displayItems();
-				break;
+				myVendingMachine.displayItems();
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 				// do purchase
-				purchaseItems();
+				// purchaseItems();
 				break;
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
 				// exit
@@ -44,13 +47,14 @@ public class VendingMachineCLI {
 				break;
 			} else if (choice.equals(MAIN_MENU_SECRET_OPTION)) {
 				// sale report
-				generateSaleReport();
+				// generateSaleReport();
 			} else {
 				System.out.println("Not a Choice");
 				break;
 			}
 		}
 	}
+
 
 	public static void main(String[] args) {
 		VendingMenu menu = new VendingMenu(System.in, System.out);
