@@ -44,18 +44,19 @@ public class VendingMachine {
         }
     }
 
-    private int balance;
-    public int getBalance() {
+    private double balance;
+    public double getBalance() {
         return balance;
     }
-    public void setBalance(int balance) {
+    public void setBalance(double balance) {
         this.balance = balance;
     }
 
     public void displayPurchaseMenu() {
-        System.out.println("Current Money Provided: " + getBalance());
-        System.out.println();
-
+        System.out.println("Current Money Provided: " + getBalance() + "\n");
+        System.out.println("(1) Feed Money");
+        System.out.println("(2) Select Product");
+        System.out.println("(3) Finish Transaction");
     }
 
 }
