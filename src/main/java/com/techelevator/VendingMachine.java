@@ -15,7 +15,7 @@ public class VendingMachine {
         try (Scanner scanner = new Scanner(myFile)) {
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                String[] itemArray = line.split("\\|");
+                String[] itemArray = line.split("\\|");   // A1|Potato Crisps|3.05|Chip
                 double price = Double.parseDouble(itemArray[2]);
                 // update the number in stock
                 VendingItems myItem = null;
@@ -44,7 +44,18 @@ public class VendingMachine {
         }
     }
 
-    // deposit money method
+    private int balance;
+    public int getBalance() {
+        return balance;
+    }
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
 
-    //
+    public void displayPurchaseMenu() {
+        System.out.println("Current Money Provided: " + getBalance());
+        System.out.println();
+
+    }
+
 }
