@@ -31,15 +31,15 @@ public class VendingMachineCLI {
 		boolean running = true;
 		while (running) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
-			String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 			VendingMachine myVendingMachine = new VendingMachine();
 			myVendingMachine.getInventory();
-			// A switch statement could also be used here.  Your choice.
+
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				// display vending machine items
-				myVendingMachine.displayItems();
+				System.out.println("\n" + "Current Money Provided: " + myVendingMachine.getBalance());
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
 				myVendingMachine.displayPurchaseMenu();
+				String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 				if(choice2.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
 					// Take to feed money screen.
 				} else if (choice2.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {

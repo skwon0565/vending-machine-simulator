@@ -52,11 +52,4 @@ public class VendingMachine {
         this.balance = balance;
     }
 
-    public void displayPurchaseMenu() {
-        System.out.println("Current Money Provided: " + getBalance() + "\n");
-        System.out.println("(1) Feed Money");
-        System.out.println("(2) Select Product");
-        System.out.println("(3) Finish Transaction");
-    }
-
 }
