@@ -10,12 +10,12 @@ public class VendingMenu {
 	private PrintWriter out;
 	private Scanner in;
 
-	public VendingMenu(InputStream input, OutputStream output) {
-		this.out = new PrintWriter(output);
-		this.in = new Scanner(input);
+	public VendingMenu(InputStream input, OutputStream output) { // Handles user input/output from console.
+		this.out = new PrintWriter(output); // Uses a PrintWriter to write to System.out in VendingMachineCLI.
+		this.in = new Scanner(input); // Uses a Scanner to read from System.in in VendingMachineCLI.
 	}
 
-	public Object getChoiceFromOptions(Object[] options) {
+	public Object getChoiceFromOptions(Object[] options) { // Reads user input and tries to parse it as an int if it's an option.
 		Object choice = null;
 		while (choice == null) {
 			displayMenuOptions(options);
@@ -41,7 +41,7 @@ public class VendingMenu {
 		return choice;
 	}
 
-	private void displayMenuOptions(Object[] options) {
+	private void displayMenuOptions(Object[] options) { // Iterates through provided menu options and displays them to user.
 		out.println();
 		for (int i = 0; i < options.length; i++) {
 			int optionNum = i + 1;

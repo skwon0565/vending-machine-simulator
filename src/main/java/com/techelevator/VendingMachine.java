@@ -53,10 +53,22 @@ public class VendingMachine {
     }
 
     public void displayPurchaseMenu() {
-        System.out.println("Current Money Provided: " + getBalance() + "\n");
+
         System.out.println("(1) Feed Money");
         System.out.println("(2) Select Product");
         System.out.println("(3) Finish Transaction");
     }
 
+    public void feedMoney(VendingMachine payment) {
+        System.out.println("How much money would you like to insert?");
+        System.out.println("Enter an amount: $0.00");
+        String amountStr = // Create method for input in VendingMenu.
+        try {
+            double amount = Double.parseDouble(amountStr);
+            payment.setBalance(payment.getBalance() + amount);
+            System.out.println("Your current balance is: $" + payment.getBalance());
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid entry. Please enter an amount 0.00?");
+        }
+    }
 }
