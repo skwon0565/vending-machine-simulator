@@ -51,5 +51,32 @@ public class VendingMachine {
     public void setBalance(double balance) {
         this.balance = balance;
     }
+    private final Scanner userInput = new Scanner(System.in);
+    public void feedMoney() {
+        System.out.println("How much money would you like to insert? (Only Bills Accepted)");
+        int insertedCash = Integer.parseInt(userInput.nextLine());
+        setBalance(getBalance() + insertedCash);
+    }
 
+    public void selectProduct() {
+        displayItems();
+        System.out.println("Input the Slot Number to Purchase");
+        String slotNumber = userInput.nextLine();
+        for (VendingItems vendingItem : vendingItems) {
+            String currentVendingItem = vendingItem.getSlotLocation();
+            if (currentVendingItem.equalsIgnoreCase(slotNumber) && vendingItem.getStockedAmount() > 0 && vendingItem.getPrice() <= getBalance()) {
+                // Entered correct slot AND Item in stock AND enough balance
+                System.out.println("\n" + vendingItem.getProductName() + " cost " + vendingItem.getPrice());
+                setBalance(getBalance() - vendingItem.getPrice());
+                vendingItem.setStockedAmount(vendingItem.getStockedAmount() - 1);
+                System.out.println("Remaining Balance: " + getBalance());
+
+                // How do I get this message to print???
+                System.out.println(vendingItem.getMessage());
+
+                setBalance(getBalance() - vendingItem.getPrice());
+            }
+        }
+
+    }
 }

@@ -23,36 +23,38 @@ public class VendingMachineCLI {
 
 	private VendingMenu menu;
 
+
 	public VendingMachineCLI(VendingMenu menu) {
 		this.menu = menu;
 	}
 
 	public void run() {
 		boolean running = true;
+		VendingMachine myVendingMachine = new VendingMachine();
+		myVendingMachine.getInventory();
 		while (running) {
 			String choice = (String) menu.getChoiceFromOptions(MAIN_MENU_OPTIONS);
-			VendingMachine myVendingMachine = new VendingMachine();
-			myVendingMachine.getInventory();
 
 			if (choice.equals(MAIN_MENU_OPTION_DISPLAY_ITEMS)) {
 				// display vending machine items
-				System.out.println("\n" + "Current Money Provided: " + myVendingMachine.getBalance());
+				myVendingMachine.displayItems();
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-				myVendingMachine.displayPurchaseMenu();
+				System.out.printf("\n %-5s %-4.2f", "Current Money Provided: ", myVendingMachine.getBalance());
 				String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+
 				if(choice2.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
-					// Take to feed money screen.
+					myVendingMachine.feedMoney();
 				} else if (choice2.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
 					// Take to menu screen so the user can select the product.
+					myVendingMachine.selectProduct();
 				} else if (choice2.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
 					// Take to main menu.
 				} else {
 					System.out.println(("Not a Choice"));
 				}
-
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
 				// exit
-				running = false;
+				running = false; // Exit the main menu loop.
 				break;
 			} else if (choice.equals(MAIN_MENU_SECRET_OPTION)) {
 				// sale report

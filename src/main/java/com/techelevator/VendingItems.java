@@ -59,5 +59,6 @@ public abstract class VendingItems {
         this.stockedAmount = NEW_STOCK;
     }
 
+
     public abstract String getMessage();
 }
