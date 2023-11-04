@@ -39,18 +39,23 @@ public class VendingMachineCLI {
 				// display vending machine items
 				myVendingMachine.displayItems();
 			} else if (choice.equals(MAIN_MENU_OPTION_PURCHASE)) {
-				System.out.printf("\n %-5s %-4.2f", "Current Money Provided: ", myVendingMachine.getBalance());
-				String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
-
-				if(choice2.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
-					myVendingMachine.feedMoney();
-				} else if (choice2.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
-					// Take to menu screen so the user can select the product.
-					myVendingMachine.selectProduct();
-				} else if (choice2.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
-					// Take to main menu.
-				} else {
-					System.out.println(("Not a Choice"));
+				// Made a Boolean statement so that it comes back to the purchase menu
+				boolean stayInPurchaseMenu = true;
+				while (stayInPurchaseMenu) {
+					System.out.printf("\n %-5s %-4.2f", "Current Money Provided: ", myVendingMachine.getBalance());
+					String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
+					if(choice2.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
+						myVendingMachine.feedMoney();
+					} else if (choice2.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
+						// Take to menu screen so the user can select the product.
+						myVendingMachine.selectProduct();
+					} else if (choice2.equals(PURCHASE_MENU_OPTION_FINISH_TRANSACTION)) {
+						// Take to main menu.
+						myVendingMachine.finishTransaction();
+						stayInPurchaseMenu = false;
+					} else {
+						System.out.println(("Not a Choice"));
+					}
 				}
 			} else if (choice.equals(MAIN_MENU_OPTION_EXIT)) {
 				// exit

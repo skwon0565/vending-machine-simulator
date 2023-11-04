@@ -2,6 +2,7 @@ package com.techelevator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -54,29 +55,76 @@ public class VendingMachine {
     private final Scanner userInput = new Scanner(System.in);
     public void feedMoney() {
         System.out.println("How much money would you like to insert? (Only Bills Accepted)");
-        int insertedCash = Integer.parseInt(userInput.nextLine());
-        setBalance(getBalance() + insertedCash);
+        try {
+            int insertedCash = Integer.parseInt(userInput.nextLine());
+            if (insertedCash <= 0) {
+                throw new NumberFormatException("Please enter a Whole Number");
+            }
+            setBalance(getBalance() + insertedCash);
+        } catch (NumberFormatException e) {
+            System.out.println("Please enter a Whole Positive Number");
+        }
     }
 
     public void selectProduct() {
         displayItems();
         System.out.println("Input the Slot Number to Purchase");
         String slotNumber = userInput.nextLine();
+        boolean vendingItemIsThere = false;
         for (VendingItems vendingItem : vendingItems) {
             String currentVendingItem = vendingItem.getSlotLocation();
-            if (currentVendingItem.equalsIgnoreCase(slotNumber) && vendingItem.getStockedAmount() > 0 && vendingItem.getPrice() <= getBalance()) {
-                // Entered correct slot AND Item in stock AND enough balance
-                System.out.println("\n" + vendingItem.getProductName() + " cost " + vendingItem.getPrice());
-                setBalance(getBalance() - vendingItem.getPrice());
-                vendingItem.setStockedAmount(vendingItem.getStockedAmount() - 1);
-                System.out.println("Remaining Balance: " + getBalance());
-
-                // How do I get this message to print???
-                System.out.println(vendingItem.getMessage());
-
-                setBalance(getBalance() - vendingItem.getPrice());
+            if (currentVendingItem.equalsIgnoreCase(slotNumber)) {
+                if (vendingItem.getStockedAmount() <= 0) {
+                    System.out.println("Item not in stock... Try Another Item!");
+                } else if (vendingItem.getPrice() > getBalance()) {
+                    System.out.println("Not enough funds... Feed more money!");
+                } else {
+                    // Entered correct slot AND Item in stock AND enough balance
+                    System.out.println("\n" + vendingItem.getProductName() + " cost " + vendingItem.getPrice());
+                    setBalance(getBalance() - vendingItem.getPrice());
+                    vendingItem.setStockedAmount(vendingItem.getStockedAmount() - 1);
+                    System.out.println("Remaining Balance: " + getBalance());
+                    System.out.println(vendingItem.getMessage());
+                    vendingItemIsThere = true;
+                    break;
+                }
             }
         }
-
+        if (vendingItemIsThere == false) {
+            System.out.println("Item does not exist... Try Again!");
+        }
     }
+
+    public void finishTransaction() {
+        // return the remaining balance in Q, D, N
+        System.out.printf("%-8s %-5.2f\n", "Remaining Change: ", getBalance());
+        System.out.println("Returned...");
+        double change = getBalance();
+//        BigDecimal change = new BigDecimal(getBalance());
+//        BigDecimal quarter = new BigDecimal(0.24);
+//        BigDecimal dime = new BigDecimal(0.09);
+//        BigDecimal nickel = new BigDecimal(0.04);
+        int quarterCount = 0;
+        int dimeCount = 0;
+        int nickelCount = 0;
+        while (change > 0.04) {
+            if (change > 0.24) {
+                change -= 0.25;
+                quarterCount++;
+            } else if (change > 0.09) {
+                change -= 0.10;
+                dimeCount++;
+            } else {
+                change -= 0.05;
+                nickelCount++;
+            }
+        }
+        System.out.println(quarterCount + " Quarter(s)");
+        System.out.println(dimeCount + " Dime(s)");
+        System.out.println(nickelCount + " Nickel(s)");
+
+        // reset the balance to 0
+        setBalance(0.00);
+    }
+
 }
