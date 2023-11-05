@@ -1,11 +1,14 @@
 package com.techelevator;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
 
 public class VendingMachine {
 
@@ -45,28 +48,30 @@ public class VendingMachine {
         }
     }
 
-    private double balance;
-    public double getBalance() {
+    private BigDecimal balance = new BigDecimal(0.00);
+    public BigDecimal getBalance() {
         return balance;
     }
-    public void setBalance(double balance) {
+    public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
     private final Scanner userInput = new Scanner(System.in);
-    public void feedMoney() {
+    public void feedMoney() throws IOException {
         System.out.println("How much money would you like to insert? (Only Bills Accepted)");
         try {
-            int insertedCash = Integer.parseInt(userInput.nextLine());
-            if (insertedCash <= 0) {
+            BigDecimal insertedCash = new BigDecimal(userInput.nextLine());
+            // int insertedCash = Integer.parseInt(userInput.nextLine());
+            if (insertedCash.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new NumberFormatException("Please enter a Whole Number");
             }
-            setBalance(getBalance() + insertedCash);
+            setBalance(getBalance().add(insertedCash));
+            storeTransactionLog("FEED MONEY:", insertedCash);
         } catch (NumberFormatException e) {
             System.out.println("Please enter a Whole Positive Number");
         }
     }
 
-    public void selectProduct() {
+    public void selectProduct() throws IOException {
         displayItems();
         System.out.println("Input the Slot Number to Purchase");
         String slotNumber = userInput.nextLine();
@@ -74,18 +79,21 @@ public class VendingMachine {
         for (VendingItems vendingItem : vendingItems) {
             String currentVendingItem = vendingItem.getSlotLocation();
             if (currentVendingItem.equalsIgnoreCase(slotNumber)) {
+                BigDecimal vendingPrice = new BigDecimal(vendingItem.getPrice());
                 if (vendingItem.getStockedAmount() <= 0) {
                     System.out.println("Item not in stock... Try Another Item!");
-                } else if (vendingItem.getPrice() > getBalance()) {
+                } else if (vendingPrice.compareTo(getBalance()) == 1) {
                     System.out.println("Not enough funds... Feed more money!");
                 } else {
                     // Entered correct slot AND Item in stock AND enough balance
                     System.out.println("\n" + vendingItem.getProductName() + " cost " + vendingItem.getPrice());
-                    setBalance(getBalance() - vendingItem.getPrice());
+                    setBalance(getBalance().subtract(vendingPrice));
                     vendingItem.setStockedAmount(vendingItem.getStockedAmount() - 1);
-                    System.out.println("Remaining Balance: " + getBalance());
+                    BigDecimal remainingBalance = getBalance().setScale(2, BigDecimal.ROUND_HALF_EVEN);
+                    System.out.println("Remaining Balance: $" + remainingBalance);
                     System.out.println(vendingItem.getMessage());
                     vendingItemIsThere = true;
+                    storeTransactionLog(vendingItem.getProductName() + " " + vendingItem.getSlotLocation(), vendingPrice);
                     break;
                 }
             }
@@ -95,27 +103,29 @@ public class VendingMachine {
         }
     }
 
-    public void finishTransaction() {
+    public void finishTransaction() throws IOException {
         // return the remaining balance in Q, D, N
         System.out.printf("%-8s %-5.2f\n", "Remaining Change: ", getBalance());
         System.out.println("Returned...");
-        double change = getBalance();
-//        BigDecimal change = new BigDecimal(getBalance());
-//        BigDecimal quarter = new BigDecimal(0.24);
-//        BigDecimal dime = new BigDecimal(0.09);
-//        BigDecimal nickel = new BigDecimal(0.04);
+        BigDecimal change = getBalance();
+        BigDecimal changeForLog = change;
+
+        BigDecimal quarter = new BigDecimal(0.25);
+        BigDecimal dime = new BigDecimal(0.10);
+        BigDecimal nickel = new BigDecimal(0.05);
+
         int quarterCount = 0;
         int dimeCount = 0;
         int nickelCount = 0;
-        while (change > 0.04) {
-            if (change > 0.24) {
-                change -= 0.25;
+        while (change.compareTo(BigDecimal.ZERO) > 0) {
+            if (change.compareTo(quarter) >= 0) {
+                change = change.subtract(quarter);
                 quarterCount++;
-            } else if (change > 0.09) {
-                change -= 0.10;
+            } else if (change.compareTo(dime) >= 0) {
+                change = change.subtract(dime);
                 dimeCount++;
             } else {
-                change -= 0.05;
+                change = change.subtract(nickel);
                 nickelCount++;
             }
         }
@@ -124,7 +134,34 @@ public class VendingMachine {
         System.out.println(nickelCount + " Nickel(s)");
 
         // reset the balance to 0
-        setBalance(0.00);
+        setBalance(BigDecimal.ZERO.setScale(2));
+        storeTransactionLog("GIVE CHANGE:", changeForLog);
+    }
+
+    public void storeTransactionLog(String action, BigDecimal amountInfluenced) throws IOException {
+        File newFile = new File("Log.txt");
+
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        LocalDate currentDate = LocalDate.now();
+        String dateFormat = currentDate.format(dateFormatter);
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm:ss a");
+        LocalTime currentTime = LocalTime.now();
+        String timeFormat = currentTime.format(timeFormatter);
+
+        amountInfluenced = amountInfluenced.setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        BigDecimal balance = getBalance().setScale(2, BigDecimal.ROUND_HALF_EVEN);
+        String message = dateFormat + " " + timeFormat + " " + action + " $" + amountInfluenced + " $" + balance + "\n";
+
+        PrintWriter writer = null;
+        if (newFile.exists()) {
+            writer = new PrintWriter(new FileWriter(newFile, true));
+        } else {
+            writer = new PrintWriter(newFile);
+        }
+        writer.append(message);
+        writer.flush();
+        writer.close();
     }
 
 }

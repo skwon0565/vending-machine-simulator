@@ -4,6 +4,7 @@ import com.techelevator.view.VendingMenu;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Scanner;
 
 
@@ -28,7 +29,7 @@ public class VendingMachineCLI {
 		this.menu = menu;
 	}
 
-	public void run() {
+	public void run() throws Exception{
 		boolean running = true;
 		VendingMachine myVendingMachine = new VendingMachine();
 		myVendingMachine.getInventory();
@@ -72,7 +73,7 @@ public class VendingMachineCLI {
 	}
 
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 		VendingMenu menu = new VendingMenu(System.in, System.out);
 		VendingMachineCLI cli = new VendingMachineCLI(menu);
 		cli.run();
