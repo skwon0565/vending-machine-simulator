@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -56,16 +57,27 @@ public class VendingMachine {
         this.balance = balance;
     }
     private final Scanner userInput = new Scanner(System.in);
-    public void feedMoney() throws IOException {
-        System.out.println("How much money would you like to insert? (Only Bills Accepted)");
-        try {
-            BigDecimal insertedCash = new BigDecimal(userInput.nextLine());
+    public void feedMoney(BigDecimal bigDecimal) throws IOException {
+        System.out.println("How much money would you like to insert? Only $1, $5, $10, $20 bills are accepted.");
+        try { // Set a restriction on the type of bills accepted.
+            BigDecimal insertedCash = new BigDecimal(userInput.nextLine()).setScale(2, BigDecimal.ROUND_HALF_UP);
+            List<BigDecimal> allowedBills = Arrays.asList(
+                    new BigDecimal("1.00"),
+                    new BigDecimal("5.00"),
+                    new BigDecimal("10.00"),
+                    new BigDecimal("20.00")
+            ); // Check to see if entry is an accepted type of bill.
+            if(!allowedBills.contains(insertedCash)) {
+                System.out.println("Invalid amount. please insert $1, $5, $10, or $20.");
+                // Update balance if entry is an accepted type of bill.
+            } else if(allowedBills.contains(insertedCash)) {
+                setBalance(getBalance().add(insertedCash));
+                storeTransactionLog("FEED MONEY:", insertedCash);
+            }
             // int insertedCash = Integer.parseInt(userInput.nextLine());
             if (insertedCash.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new NumberFormatException("Please enter a Whole Number");
             }
-            setBalance(getBalance().add(insertedCash));
-            storeTransactionLog("FEED MONEY:", insertedCash);
         } catch (NumberFormatException e) {
             System.out.println("Please enter a Whole Positive Number");
         }
@@ -82,8 +94,10 @@ public class VendingMachine {
                 BigDecimal vendingPrice = new BigDecimal(vendingItem.getPrice());
                 if (vendingItem.getStockedAmount() <= 0) {
                     System.out.println("Item not in stock... Try Another Item!");
+                    break;
                 } else if (vendingPrice.compareTo(getBalance()) == 1) {
                     System.out.println("Not enough funds... Feed more money!");
+                    break;
                 } else {
                     // Entered correct slot AND Item in stock AND enough balance
                     System.out.println("\n" + vendingItem.getProductName() + " cost " + vendingItem.getPrice());
@@ -97,10 +111,11 @@ public class VendingMachine {
                     break;
                 }
             }
+            if (vendingItemIsThere == false) { // Moved inside for(); otherwise, it was printing every time.
+                System.out.println("Item does not exist... Try Again!");
+            }
         }
-        if (vendingItemIsThere == false) {
-            System.out.println("Item does not exist... Try Again!");
-        }
+
     }
 
     public void finishTransaction() throws IOException {
