@@ -88,15 +88,19 @@ public class VendingMachine {
         System.out.println("Input the Slot Number to Purchase");
         String slotNumber = userInput.nextLine();
         boolean vendingItemIsThere = false;
+        // Boolean so that error message does not repeat
+        boolean hasBalanceAndItemInStock = true;
         for (VendingItems vendingItem : vendingItems) {
             String currentVendingItem = vendingItem.getSlotLocation();
             if (currentVendingItem.equalsIgnoreCase(slotNumber)) {
                 BigDecimal vendingPrice = new BigDecimal(vendingItem.getPrice());
                 if (vendingItem.getStockedAmount() <= 0) {
                     System.out.println("Item not in stock... Try Another Item!");
+                    hasBalanceAndItemInStock = false;
                     break;
                 } else if (vendingPrice.compareTo(getBalance()) == 1) {
                     System.out.println("Not enough funds... Feed more money!");
+                    hasBalanceAndItemInStock = false;
                     break;
                 } else {
                     // Entered correct slot AND Item in stock AND enough balance
@@ -111,11 +115,11 @@ public class VendingMachine {
                     break;
                 }
             }
-            if (vendingItemIsThere == false) { // Moved inside for(); otherwise, it was printing every time.
-                System.out.println("Item does not exist... Try Again!");
-            }
-        }
 
+        }
+        if (vendingItemIsThere == false && hasBalanceAndItemInStock == true) {
+            System.out.println("Item does not exist... Try Again!");
+        }
     }
 
     public void finishTransaction() throws IOException {
