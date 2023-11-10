@@ -57,7 +57,7 @@ public class VendingMachine {
         this.balance = balance;
     }
     private final Scanner userInput = new Scanner(System.in);
-    public void feedMoney(BigDecimal bigDecimal) throws IOException {
+    public void feedMoney() throws IOException {
         System.out.println("How much money would you like to insert? Only $1, $5, $10, $20 bills are accepted.");
         try { // Set a restriction on the type of bills accepted.
             BigDecimal insertedCash = new BigDecimal(userInput.nextLine()).setScale(2, BigDecimal.ROUND_HALF_UP);
@@ -115,7 +115,6 @@ public class VendingMachine {
                     break;
                 }
             }
-
         }
         if (vendingItemIsThere == false && hasBalanceAndItemInStock == true) {
             System.out.println("Item does not exist... Try Again!");
@@ -143,9 +142,11 @@ public class VendingMachine {
             } else if (change.compareTo(dime) >= 0) {
                 change = change.subtract(dime);
                 dimeCount++;
-            } else {
+            } else if (change.compareTo(nickel) >= 0){
                 change = change.subtract(nickel);
                 nickelCount++;
+            } else {
+                break;
             }
         }
         System.out.println(quarterCount + " Quarter(s)");

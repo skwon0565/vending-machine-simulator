@@ -43,7 +43,7 @@ public class VendingMachineCLI {
 					System.out.printf("\n %-5s %-4.2f", "Current Money Provided: ", myVendingMachine.getBalance());
 					String choice2 = (String) menu.getChoiceFromOptions(PURCHASE_MENU_OPTIONS);
 					if(choice2.equals(PURCHASE_MENU_OPTION_FEED_MONEY)) {
-						myVendingMachine.feedMoney(new BigDecimal("1.00"));
+						myVendingMachine.feedMoney();
 					} else if (choice2.equals(PURCHASE_MENU_OPTION_SELECT_PRODUCT)) {
 						// Take to menu screen so the user can select the product.
 						myVendingMachine.selectProduct();
