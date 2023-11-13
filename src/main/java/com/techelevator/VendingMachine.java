@@ -2,6 +2,7 @@ package com.techelevator;
 
 import java.io.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +15,7 @@ import java.util.Scanner;
 public class VendingMachine {
 
     List<VendingItems> vendingItems = new ArrayList();
+
 
     public void getInventory() {
         File myFile = new File("vendingmachine.csv");
@@ -51,12 +53,16 @@ public class VendingMachine {
 
     private BigDecimal balance = new BigDecimal(0.00);
     public BigDecimal getBalance() {
-        return balance;
+        return balance.setScale(2, RoundingMode.HALF_UP);
     }
     public void setBalance(BigDecimal balance) {
         this.balance = balance;
     }
-    private final Scanner userInput = new Scanner(System.in);
+    private Scanner userInput = new Scanner(System.in);
+    public void setUserInputScanner(Scanner scanner) {
+        this.userInput = scanner;
+    }
+
     public void feedMoney() throws IOException {
         System.out.println("How much money would you like to insert? Only $1, $5, $10, $20 bills are accepted.");
         try { // Set a restriction on the type of bills accepted.
